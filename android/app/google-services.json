@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1078313177864",
+    "project_id": "foodordersampleauth",
+    "storage_bucket": "foodordersampleauth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1078313177864:android:4a2caa57bf8b5edc7952bd",
+        "android_client_info": {
+          "package_name": "com.example.speechtotext"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1078313177864-9lv9etca1o76o4sg0i91bacovn96q2kf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.speechtotext",
+            "certificate_hash": "25aaeaf4e3e3d68b05b5f8b70521cc8a3e2401d3"
+          }
+        },
+        {
+          "client_id": "1078313177864-3f3t9a5dc68ct3k5ve8sj8dfk1ekm4bf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwrE6klXWmyn7vWNX-kSfTFqdwVSlx1AA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1078313177864-3f3t9a5dc68ct3k5ve8sj8dfk1ekm4bf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
