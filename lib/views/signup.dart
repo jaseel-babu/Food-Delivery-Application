@@ -159,6 +159,6 @@ class SignUp extends StatelessWidget {
         .doc(user.uid)
         .set(userModel.toMap());
     Get.snackbar("Saved", "Account Created Sucessfully");
-    Get.to(() => const FirstPage());
+    Get.to(() => FirstPage());
   }
 }

@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speechtotext/views/loginpage.dart';
 import 'controller/controller.dart';
 import 'views/homepage.dart';
+import 'package:lint/lint.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

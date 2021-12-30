@@ -5,7 +5,7 @@ class UserModel {
   String? secondname;
   UserModel({this.userid, this.email, this.firstname, this.secondname});
   //fetch data from server
-  factory UserModel.fromMap(map) {
+  factory UserModel.fromMap(Map<String, String> map) {
     return UserModel(
         userid: map["userid"],
         email: map["email"],

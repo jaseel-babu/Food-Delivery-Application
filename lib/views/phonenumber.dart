@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speechtotext/views/details.dart';
+import 'package:speechtotext/views/otppage.dart';
 
 class Phonenumber extends StatelessWidget {
   Phonenumber({Key? key}) : super(key: key);
@@ -31,7 +32,7 @@ class Phonenumber extends StatelessWidget {
                       }
                       return null;
                     },
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.phone_android),
@@ -43,7 +44,9 @@ class Phonenumber extends StatelessWidget {
                     height: 30,
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      verify();
+                    },
                     child: const Text("Verify"),
                   )
                 ],
@@ -57,7 +60,7 @@ class Phonenumber extends StatelessWidget {
 
   verify() async {
     if (_formKey.currentState!.validate()) {
-      await Get.to(() => const FirstPage());
+      await Get.to(() => OtpPage());
     }
   }
 }

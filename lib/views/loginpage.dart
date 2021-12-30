@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,9 +6,11 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speechtotext/controller/controller.dart';
 import 'package:speechtotext/views/details.dart';
 import 'package:speechtotext/views/phonenumber.dart';
 import 'package:speechtotext/views/signup.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -15,8 +18,10 @@ class LoginPage extends StatelessWidget {
   final TextEditingController emailcontroller = TextEditingController();
   final TextEditingController passwordcontroller = TextEditingController();
   //Calling Firebase
+  final controller = Get.put(Controller());
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,11 +107,44 @@ class LoginPage extends StatelessWidget {
                       )
                     ],
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Get.to(() => Phonenumber());
+                  // TextButton(
+                  //   onPressed: () {
+                  //     Get.to(() => Phonenumber());
+                  //   },
+                  //   child: const Text("Login With Mobile Number"),
+                  // ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  GetBuilder<Controller>(
+                    // id: "signwithGoogle",
+                    builder: (controller) {
+                      return FloatingActionButton.extended(
+                        backgroundColor: Colors.white,
+                        icon: Image.asset(
+                          "assets/images/google-logo-9824.png",
+                          height: 30,
+                          width: 30,
+                        ),
+                        onPressed: () {
+                          controller.loginWithGmail();
+
+                          Timer(
+                            const Duration(seconds: 3),
+                            () {
+                              controller.googlesignedornot == true
+                                  ? Get.off(() => FirstPage())
+                                  : print("illa");
+                            },
+                          );
+                        },
+                        label: const Text(
+                          "Sign With Google",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      );
+                      ;
                     },
-                    child: const Text("Login With Mobile Number"),
                   ),
                 ],
               ),
@@ -121,10 +159,11 @@ class LoginPage extends StatelessWidget {
     if (_formKey.currentState!.validate()) {
       try {
         print("validate");
-        User user = (await _auth.signInWithEmailAndPassword(
+        controller.user = (await _auth.signInWithEmailAndPassword(
                 email: email, password: password))
             .user!;
-        Get.off(() => const FirstPage());
+
+        Get.off(() => FirstPage());
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool("onboard", true);
         Get.snackbar("Success", "Logined Sucessfully",
@@ -134,7 +173,7 @@ class LoginPage extends StatelessWidget {
         if (e.code == 'user-not-found') {
           Get.snackbar(
             "Faild",
-            "Please Enter valid details",
+            "User Not Found",
             snackPosition: SnackPosition.BOTTOM,
           );
         }

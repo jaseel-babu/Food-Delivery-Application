@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speechtotext/models/onboards.dart';
 import 'package:get/state_manager.dart';
@@ -10,11 +12,34 @@ class Controller extends GetxController {
   var pageController = PageController();
   bool lastpage = false;
   bool? value = false;
+  String? _verificationCode;
+  String? mobilenumber;
+  bool verifyornext = false;
+  bool googlesignedornot = false;
+  User? user;
+  var _googleSignin = GoogleSignIn();
+  bool gmailtry = false;
+
+  GoogleSignInAccount? googleaccount;
   @override
   void onInit() {
     getshared();
-
+    // verfimobilenumber;
     super.onInit();
+  }
+
+  loginWithGmail() async {
+    this.googleaccount = await _googleSignin.signIn();
+    googlesignedornot = true;
+    gmailtry = true;
+
+    update();
+  }
+
+  logoutWithGmail() async {
+    this.googleaccount = await _googleSignin.signOut();
+    googlesignedornot = false;
+    update();
   }
 
   void getshared() async {
@@ -42,4 +67,29 @@ class Controller extends GetxController {
         imageAsset: "assets/images/foodpanda-right-header.png",
         title: "Fast Delivery")
   ];
+  // verfimobilenumber() async {
+  //   await FirebaseAuth.instance.verifyPhoneNumber(
+  //       timeout: Duration(seconds: 60),
+  //       phoneNumber: mobilenumber!,
+  //       verificationCompleted: (PhoneAuthCredential credential) async {
+  //         await FirebaseAuth.instance
+  //             .signInWithCredential(credential)
+  //             .then((value) async {
+  //           if (value.user != null) {
+  //             print("success");
+  //           }
+  //         });
+  //       },
+  //       verificationFailed: (FirebaseAuthException e) {
+  //         print(e);
+  //       },
+  //       codeSent: (verficationid, resendtoken) {
+  //         _verificationCode = verficationid;
+  //         update();
+  //       },
+  //       codeAutoRetrievalTimeout: (verificationId) {
+  //         _verificationCode = verificationId;
+  //         update();
+  //       });
+  // }
 }
