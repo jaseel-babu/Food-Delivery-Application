@@ -10,7 +10,7 @@ class UserModel {
         userid: map["userid"],
         email: map["email"],
         firstname: map['firstname'],
-        secondname: map["secondname"]);
+        secondname: map["secondname"],);
   }
   //sending data to server
   Map<String, dynamic> toMap() {

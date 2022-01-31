@@ -23,7 +23,7 @@ class SignUp extends StatelessWidget {
           child: Form(
             key: _formKey,
             child: ListView(
-              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              
               children: [
                 Image.asset(
                   "assets/images/5526265.jpg",
@@ -104,9 +104,9 @@ class SignUp extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () {
                       signupbutton(
-                          emailcontroller.text, passwordcontroller.text);
+                          emailcontroller.text, passwordcontroller.text,);
                     },
-                    child: const Text("Sign up"))
+                    child: const Text("Sign up"),)
               ],
             ),
           ),
@@ -116,7 +116,7 @@ class SignUp extends StatelessWidget {
   }
 
   TextFormField field(String text, TextEditingController controller,
-      IconData icon, String? Function(String?)? validator) {
+      IconData icon, String? Function(String?)? validator,) {
     return TextFormField(
       validator: validator,
       controller: controller,
@@ -130,23 +130,21 @@ class SignUp extends StatelessWidget {
     );
   }
 
-  void signupbutton(String email, String password) async {
+   signupbutton(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       try {
         await _auth
             .createUserWithEmailAndPassword(email: email, password: password)
             .then((value) => {posttoFirestore()});
       } on FirebaseAuthException catch (e) {
-        //  print(e.message);
+       
 
         Get.snackbar("Faild", "Please Enter valid details");
       }
     }
   }
 
-  void posttoFirestore() async {
-//calling Firestore
-
+   posttoFirestore() async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
     final userModel = UserModel();

@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:speechtotext/controller/controller.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:speechtotext/models/user_details.dart';
 
 class FirstPage extends StatefulWidget {
   FirstPage({Key? key}) : super(key: key);
@@ -15,16 +18,18 @@ class FirstPage extends StatefulWidget {
 class _FirstPageState extends State<FirstPage> {
   @override
   void initState() {
-    _determinePosition();
+    //_determinePosition();
 
     super.initState();
   }
 
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
   final controller = Get.put(Controller());
 
-  var latitude = "";
+  // var latitude = "";
 
-  var longitude = "";
+  // var longitude = "";
 
   @override
   Widget build(BuildContext context) {
@@ -36,52 +41,42 @@ class _FirstPageState extends State<FirstPage> {
               title: GetBuilder<Controller>(
                 builder: (controller) {
                   return controller.gmailtry == true
-                      ? Text(controller.googleaccount!.displayName!)
-                      : Text(controller.user!.email!);
+                      ? StreamBuilder(
+                          stream: FirebaseAuth.instance.authStateChanges(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return CircularProgressIndicator();
+                            }if(snapshot.connectionState==ConnectionState.waiting){
+                                 return CircularProgressIndicator();
+                            }final user = snapshot.data as User;
+                            return Text(user.displayName!);
+                          })
+                      : StreamBuilder(
+                          stream: controller.uid == null
+                              ? firebaseFirestore
+                                  .collection("user")
+                                  .doc(controller.user!.uid)
+                                  .snapshots()
+                              : firebaseFirestore
+                                  .collection("user")
+                                  .doc(controller.uid)
+                                  .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(
+                                (snapshot.data as dynamic)["firstname"]
+                                    .toString(),
+                              );
+                            }
+                            return const SizedBox();
+                          },
+                        );
                 },
               ),
-              // leading: Image.network(controller.googleaccount!.photoUrl!),
             ),
           ],
         ),
       ),
     );
-  }
-
-  _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    return getCurrentLocation();
-  }
-
-  getCurrentLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    Position? lastPosition = await Geolocator.getLastKnownPosition();
-    latitude = "${position.latitude}";
-    longitude = "${position.longitude}";
-    controller.update();
-
-    print(latitude);
-    print(longitude);
   }
 }

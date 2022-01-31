@@ -10,6 +10,7 @@ import 'package:get/utils.dart';
 class Controller extends GetxController {
   var selectedIndex = 0.obs;
   var pageController = PageController();
+  String? uid;
   bool lastpage = false;
   bool? value = false;
   String? _verificationCode;
@@ -17,22 +18,38 @@ class Controller extends GetxController {
   bool verifyornext = false;
   bool googlesignedornot = false;
   User? user;
+  bool? userishere = false;
   var _googleSignin = GoogleSignIn();
-  bool gmailtry = false;
+  bool? gmailtry = false;
 
   GoogleSignInAccount? googleaccount;
   @override
   void onInit() {
     getshared();
-    // verfimobilenumber;
+    userloged();
+    alreadylogged();
     super.onInit();
   }
-
+userloged()async{
+   SharedPreferences prefs = await SharedPreferences.getInstance();
+   
+    gmailtry = prefs.getBool("login");
+    update();
+}
   loginWithGmail() async {
     this.googleaccount = await _googleSignin.signIn();
+     final googleAuth = await googleaccount!.authentication;
+  final credential = GoogleAuthProvider.credential(
+    idToken: googleAuth.idToken,
+    accessToken: googleAuth.accessToken,
+  );
+  await FirebaseAuth.instance.signInWithCredential(credential);
     googlesignedornot = true;
-    gmailtry = true;
 
+    uid = "userhere";
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("login", true);
+    gmailtry = prefs.getBool("login");
     update();
   }
 
@@ -47,6 +64,13 @@ class Controller extends GetxController {
     value = prefs.getBool("onboard");
     update();
     print(value);
+  }
+
+  void alreadylogged() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userishere = prefs.getBool("login");
+    uid = prefs.getString("uid");
+    update();
   }
 
   pageforward() {
@@ -64,8 +88,9 @@ class Controller extends GetxController {
     Onboardmodel(
         imageAsset: "assets/images/pngwing.com.png", title: "Fast Delivery"),
     Onboardmodel(
-        imageAsset: "assets/images/foodpanda-right-header.png",
-        title: "Fast Delivery")
+      imageAsset: "assets/images/foodpanda-right-header.png",
+      title: "Fast Delivery",
+    )
   ];
   // verfimobilenumber() async {
   //   await FirebaseAuth.instance.verifyPhoneNumber(

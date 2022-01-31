@@ -34,11 +34,11 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Image.asset(
-                            controller.onboardingpage[index].imageAsset),
+                            controller.onboardingpage[index].imageAsset,),
                         Text(
                           controller.onboardingpage[index].title,
                           style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 22),
+                              fontWeight: FontWeight.bold, fontSize: 22,),
                         )
                       ],
                     ),
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment. center,
                 children: List.generate(
                   controller.onboardingpage.length,
                   (index) => Obx(
@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
                             color: controller.selectedIndex == index
                                 ? Colors.red
                                 : Colors.grey,
-                            shape: BoxShape.circle),
+                            shape: BoxShape.circle,),
                       );
                     },
                   ),
@@ -71,19 +71,19 @@ class _HomePageState extends State<HomePage> {
                 child: Obx(
                   () => FloatingActionButton(
                     onPressed: () async {
-                      SharedPreferences prefs =
+                    
+                      if (controller.selectedIndex ==
+                          controller.onboardingpage.length - 1) {  SharedPreferences prefs =
                           await SharedPreferences.getInstance();
                       prefs.setBool("onboard", true);
-                      if (controller.selectedIndex ==
-                          controller.onboardingpage.length - 1) {
                         Get.off(() => LoginPage());
                       }
                       controller.pageforward();
                     },
                     child: controller.selectedIndex ==
                             controller.onboardingpage.length - 1
-                        ? Text("start")
-                        : Text("Next"),
+                        ?const Text("start")
+                        :const Text("Next"),
                   ),
                 ),
               ),

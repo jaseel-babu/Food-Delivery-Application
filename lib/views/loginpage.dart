@@ -24,6 +24,9 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final orientaion = MediaQuery.of(context).orientation;
+    final maxwidth = MediaQuery.of(context).size.width;
+    final maxheight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -32,9 +35,11 @@ class LoginPage extends StatelessWidget {
             child: Form(
               key: _formKey,
               child: ListView(
-                // mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Image.asset("assets/images/5526265.jpg"),
+                  Image.asset(
+                    "assets/images/5526265.jpg",
+                    height: maxheight / 2,
+                  ),
                   TextFormField(
                     autofocus: false,
                     controller: emailcontroller,
@@ -57,8 +62,8 @@ class LoginPage extends StatelessWidget {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
+                  SizedBox(
+                    height: maxheight / 32,
                   ),
                   TextFormField(
                     decoration: const InputDecoration(
@@ -83,14 +88,14 @@ class LoginPage extends StatelessWidget {
                     controller: passwordcontroller,
                     onSaved: (newValue) => passwordcontroller.text = newValue!,
                   ),
-                  const SizedBox(
-                    height: 20,
+                  SizedBox(
+                    height: maxheight / 32,
                   ),
                   ElevatedButton(
                       onPressed: () {
                         login(emailcontroller.text, passwordcontroller.text);
                       },
-                      child: const Text("Log In")),
+                      child: const Text("Log In"),),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -113,11 +118,11 @@ class LoginPage extends StatelessWidget {
                   //   },
                   //   child: const Text("Login With Mobile Number"),
                   // ),
-                  const SizedBox(
-                    height: 10,
+SizedBox(
+                    height: maxheight / 32,
                   ),
                   GetBuilder<Controller>(
-                    // id: "signwithGoogle",
+                   
                     builder: (controller) {
                       return FloatingActionButton.extended(
                         backgroundColor: Colors.white,
@@ -134,7 +139,7 @@ class LoginPage extends StatelessWidget {
                             () {
                               controller.googlesignedornot == true
                                   ? Get.off(() => FirstPage())
-                                  : print("illa");
+                                  : print("try again");
                             },
                           );
                         },
@@ -143,9 +148,8 @@ class LoginPage extends StatelessWidget {
                           style: TextStyle(color: Colors.black),
                         ),
                       );
-                      ;
                     },
-                  ),
+                  )
                 ],
               ),
             ),
@@ -158,14 +162,16 @@ class LoginPage extends StatelessWidget {
   void login(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       try {
-        print("validate");
+
         controller.user = (await _auth.signInWithEmailAndPassword(
-                email: email, password: password))
+          email: email,
+          password: password,
+        ))
             .user!;
 
         Get.off(() => FirstPage());
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setBool("onboard", true);
+        prefs.setBool("login", true);prefs.setString("uid", controller.user!.uid);
         Get.snackbar("Success", "Logined Sucessfully",
             snackPosition: SnackPosition.BOTTOM);
       } on FirebaseAuthException catch (e) {
